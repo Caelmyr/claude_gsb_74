@@ -204,6 +204,10 @@ pre.code {
 pre.code.light { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
 code.inline { font-family: var(--mono); background: var(--surface-2); padding: 1px 5px; border-radius: 4px; font-size: 12.5px; }
 
+/* ---------- 样例 ---------- */
+.sample-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.sample-head label { margin-bottom: 0; }
+
 /* ---------- 编辑器 ---------- */
 .editor-wrap { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
 .editor-toolbar {

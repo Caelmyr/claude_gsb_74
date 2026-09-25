@@ -224,9 +224,24 @@
       cm.innerHTML = s.compile_message ? `<pre class="code">${OJ_.esc(s.compile_message)}</pre>` : "";
     }
 
+    // 若从题目页点击“填入编辑器”跳转而来，把对应样例输入填进编辑器（只填入，不影响其他状态）
+    function applyPendingSampleInput() {
+      let input = null, no = "";
+      try {
+        input = sessionStorage.getItem("oj_fill_sample_input");
+        if (input === null) return;
+        no = sessionStorage.getItem("oj_fill_sample_no") || "";
+        sessionStorage.removeItem("oj_fill_sample_input");
+        sessionStorage.removeItem("oj_fill_sample_no");
+      } catch (e) { return; }
+      setCode(input);
+      OJ_.toast(no ? `已填入样例 ${no} 的输入` : "已填入样例输入", "success");
+    }
+
     initEditor();
     loadProblems();
     loadContests();
+    applyPendingSampleInput();
   </script>
 </body>
 </html>

@@ -17,6 +17,18 @@
   <script>
     OJ.boot("index");
     const pid = new URLSearchParams(location.search).get("id");
+    let samplesData = [];
+
+    // 把指定样例的输入暂存并跳转到编辑器页，由编辑器页完成填入
+    function fillSampleToEditor(i) {
+      const s = samplesData[i];
+      if (!s) return;
+      try {
+        sessionStorage.setItem("oj_fill_sample_input", s.input == null ? "" : String(s.input));
+        sessionStorage.setItem("oj_fill_sample_no", String(i + 1));
+      } catch (e) { /* 存储不可用时仍正常跳转 */ }
+      location.href = "/editor.html?id=" + encodeURIComponent(pid);
+    }
 
     function renderMarkdownish(text) {
       // 简单段落化：空行分段，保留行内 code
@@ -32,9 +44,13 @@
       box.innerHTML = '<div class="empty"><span class="spinner"></span> 加载题目…</div>';
       try {
         const p = await OJ.api("/problems/" + pid);
-        const samples = (p.samples || []).map((s, i) => `
+        samplesData = p.samples || [];
+        const samples = samplesData.map((s, i) => `
           <div class="form-group">
-            <label>样例 ${i + 1}</label>
+            <div class="sample-head">
+              <label>样例 ${i + 1}</label>
+              <button class="btn btn-outline btn-sm" onclick="fillSampleToEditor(${i})">📥 填入编辑器</button>
+            </div>
             <pre class="code light">${OJ.esc(s.input)}</pre>
             <label class="mt-8">输出</label>
             <pre class="code light">${OJ.esc(s.output)}</pre>
