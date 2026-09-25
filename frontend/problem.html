@@ -17,6 +17,15 @@
   <script>
     OJ.boot("index");
     const pid = new URLSearchParams(location.search).get("id");
+    let samplesData = [];
+
+    // 把第 i 组样例的输入带到编辑器页并填入代码编辑器
+    function fillSample(i) {
+      const s = samplesData[i];
+      if (!s) return;
+      sessionStorage.setItem("oj_fill_sample", JSON.stringify({ problem_id: pid, input: s.input || "" }));
+      location.href = "/editor.html?id=" + encodeURIComponent(pid);
+    }
 
     function renderMarkdownish(text) {
       // 简单段落化：空行分段，保留行内 code
@@ -32,9 +41,13 @@
       box.innerHTML = '<div class="empty"><span class="spinner"></span> 加载题目…</div>';
       try {
         const p = await OJ.api("/problems/" + pid);
-        const samples = (p.samples || []).map((s, i) => `
+        samplesData = p.samples || [];
+        const samples = samplesData.map((s, i) => `
           <div class="form-group">
-            <label>样例 ${i + 1}</label>
+            <div class="flex-between" style="margin-bottom:6px">
+              <label style="margin-bottom:0">样例 ${i + 1}</label>
+              <button class="btn btn-outline btn-sm" onclick="fillSample(${i})">📋 填入编辑器</button>
+            </div>
             <pre class="code light">${OJ.esc(s.input)}</pre>
             <label class="mt-8">输出</label>
             <pre class="code light">${OJ.esc(s.output)}</pre>
@@ -68,7 +81,7 @@
 
           <div class="card">
             <div class="card-title">样例</div>
-            ${samples}
+            ${samples || '<span class="muted">（无）</span>'}
           </div>
 
           ${p.hint ? `<div class="card"><div class="card-title">提示</div>${renderMarkdownish(p.hint)}</div>` : ""}

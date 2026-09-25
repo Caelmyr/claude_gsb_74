@@ -206,6 +206,7 @@ code.inline { font-family: var(--mono); background: var(--surface-2); padding: 1
 
 /* ---------- 编辑器 ---------- */
 .editor-wrap { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.editor-wrap.sample-flash { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-50); transition: box-shadow .3s, border-color .3s; }
 .editor-toolbar {
   display: flex; align-items: center; justify-content: space-between;
   padding: 8px 14px; background: var(--surface-2); border-bottom: 1px solid var(--border);

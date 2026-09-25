@@ -161,6 +161,24 @@
       } catch (e) {}
     }
 
+    // 若从题目详情页点了“填入编辑器”，把待填入的样例输入填进代码编辑器
+    function applyPendingSample() {
+      let raw = null;
+      try { raw = sessionStorage.getItem("oj_fill_sample"); } catch (e) { return; }
+      if (!raw) return;
+      try { sessionStorage.removeItem("oj_fill_sample"); } catch (e) {}
+      let data = null;
+      try { data = JSON.parse(raw); } catch (e) { return; }
+      if (!data || typeof data.input !== "string") return;
+      setCode(data.input);
+      OJ_.toast("已填入样例输入", "success");
+      const wrap = document.querySelector(".editor-wrap");
+      if (wrap) {
+        wrap.classList.add("sample-flash");
+        setTimeout(() => wrap.classList.remove("sample-flash"), 1600);
+      }
+    }
+
     async function submit() {
       const user = OJ_.currentUser();
       if (!user) { OJ_.toast("请先登录后提交", "error"); location.href = "/index.html?login=1"; return; }
@@ -225,7 +243,7 @@
     }
 
     initEditor();
-    loadProblems();
+    loadProblems().then(applyPendingSample);
     loadContests();
   </script>
 </body>
